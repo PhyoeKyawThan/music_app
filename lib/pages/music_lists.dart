@@ -16,7 +16,7 @@ class _MusicListState extends State<MusicList> {
   @override
   Widget build(BuildContext context) {
     final playListProvider = context.watch<PlaylistProvider>();
-    List<MusicModel> _playList = playListProvider.playlist;
+    List<MusicModel> playList = playListProvider.playlist;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -30,12 +30,12 @@ class _MusicListState extends State<MusicList> {
         child: ListView.builder(
           itemCount: playListProvider.playlist.length,
           itemBuilder: (context, index) {
-            return MusicListItem(music: playListProvider.playlist[index]);
+            return MusicListItem(music: playList[index]);
           },
         ),
         onRefresh: () async {
           setState(() {
-            _playList = playListProvider.playlist;
+            playList = playListProvider.playlist;
           });
         },
       ),
