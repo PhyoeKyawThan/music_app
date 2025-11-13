@@ -1,12 +1,19 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:music_app/modules/change_notifier.dart';
 import 'package:music_app/pages/home.dart';
 import 'package:music_app/pages/music_lists.dart';
 import 'package:music_app/widgets/bottom_navigation.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MaterialApp(home: View()));
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => PlaylistProvider(),
+      child: MaterialApp(home: View()),
+    ),
+  );
 }
 
 class View extends StatefulWidget {
@@ -44,7 +51,7 @@ class _ViewState extends State<View> {
     super.dispose();
   }
 
-  List<Widget> get _pages => [Home(player: player), MusicList(player: player)];
+  List<Widget> get _pages => [Home(player: player), MusicList()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

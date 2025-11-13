@@ -1,23 +1,25 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/constants/app_colors.dart';
+import 'package:music_app/modules/change_notifier.dart';
+import 'package:provider/provider.dart';
 
 class PlayerControls extends StatefulWidget {
-  final AudioPlayer player;
-  final String audioPath;
+  // final AudioPlayer player;
+  // final String audioPath;
   const PlayerControls({
     super.key,
-    required this.player,
-    required this.audioPath,
+    // required this.player,
+    // required this.audioPath,
   });
   @override
   State<PlayerControls> createState() => _PlayerControlsState();
 }
 
 class _PlayerControlsState extends State<PlayerControls> {
-  bool isPlaying = false;
   @override
   Widget build(BuildContext context) {
+    final playListProvider = context.watch<PlaylistProvider>();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -27,7 +29,9 @@ class _PlayerControlsState extends State<PlayerControls> {
           icon: Icon(Icons.shuffle_sharp, color: AppColors.textPrimary),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            playListProvider.playPrevious();
+          },
           icon: Icon(Icons.skip_previous, color: AppColors.textPrimary),
         ),
         IconButton(
@@ -36,23 +40,21 @@ class _PlayerControlsState extends State<PlayerControls> {
             backgroundColor: WidgetStatePropertyAll(AppColors.primaryAccent),
           ),
           onPressed: () async {
-            if (!isPlaying) {
-              await widget.player.setSource(AssetSource(widget.audioPath));
-              await widget.player.resume();
+            if (playListProvider.isPlaying) {
+              await playListProvider.pause();
             } else {
-              await widget.player.pause();
+              await playListProvider.resume();
             }
-            setState(() {
-              isPlaying = !isPlaying;
-            });
           },
           icon: Icon(
-            isPlaying ? Icons.pause : Icons.play_arrow,
+            playListProvider.isPlaying ? Icons.pause : Icons.play_arrow,
             color: AppColors.textPrimary,
           ),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            playListProvider.playNext();
+          },
           icon: Icon(Icons.skip_next, color: AppColors.textPrimary),
         ),
         IconButton(

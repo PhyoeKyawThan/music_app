@@ -1,28 +1,22 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/constants/app_colors.dart';
 import 'package:music_app/models/music.dart';
+import 'package:music_app/modules/change_notifier.dart';
 import 'package:music_app/widgets/music_list_item.dart';
+import 'package:provider/provider.dart';
 
 class MusicList extends StatefulWidget {
-  final AudioPlayer player;
-  const MusicList({super.key, required this.player});
+  // final AudioPlayer player;
+  const MusicList({super.key});
   @override
   State<MusicList> createState() => _MusicListState();
 }
 
 class _MusicListState extends State<MusicList> {
-  List<Map<String, dynamic>> musicList = [
-    {
-      "title": "Perfect",
-      "singer": "Ed Shreen",
-      "coverImage": "assets/es.png",
-      "duration": "2:00",
-      "sourcePath": "musics/Ed Sheeran - Perfect (Official Music Video).mp3",
-    },
-  ];
   @override
   Widget build(BuildContext context) {
+    final playListProvider = context.watch<PlaylistProvider>();
+    List<MusicModel> _playList = playListProvider.playlist;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -32,16 +26,18 @@ class _MusicListState extends State<MusicList> {
         backgroundColor: AppColors.primaryBackground,
       ),
       backgroundColor: AppColors.secondaryBackground,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: musicList.map((music) {
-            return MusicListItem(
-              music: MusicModel.toObject(music),
-              player: widget.player,
-            );
-          }).toList(),
+      body: RefreshIndicator(
+        child: ListView.builder(
+          itemCount: playListProvider.playlist.length,
+          itemBuilder: (context, index) {
+            return MusicListItem(music: playListProvider.playlist[index]);
+          },
         ),
+        onRefresh: () async {
+          setState(() {
+            _playList = playListProvider.playlist;
+          });
+        },
       ),
     );
   }

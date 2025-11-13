@@ -1,4 +1,5 @@
 class MusicModel {
+  int? id;
   String? title;
   String? coverImage;
   String? singer;
@@ -6,6 +7,7 @@ class MusicModel {
   String? sourcePath;
 
   MusicModel({
+    this.id,
     this.title,
     this.coverImage,
     this.singer,
@@ -15,6 +17,7 @@ class MusicModel {
 
   static MusicModel toObject(Map<String, dynamic> data) {
     return MusicModel(
+      id: data['id'],
       title: data['title'],
       coverImage: data['coverImage'],
       singer: data['singer'],
@@ -25,6 +28,7 @@ class MusicModel {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'title': title,
       'coverImage': coverImage,
       'singer': singer,

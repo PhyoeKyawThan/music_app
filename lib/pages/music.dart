@@ -1,22 +1,38 @@
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/constants/app_colors.dart';
 import 'package:music_app/models/music.dart';
+import 'package:music_app/modules/change_notifier.dart';
 import 'package:music_app/widgets/player_controls.dart';
+import 'package:provider/provider.dart';
 
 class Music extends StatefulWidget {
-  final AudioPlayer player;
+  // final AudioPlayer player;
   final MusicModel music;
 
-  const Music({super.key, required this.music, required this.player});
+  // const Music({super.key, required this.music, required this.player});
+  const Music({super.key, required this.music});
+
   @override
   State<Music> createState() => _MusicState();
 }
 
 class _MusicState extends State<Music> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final playListProvider = context.read<PlaylistProvider>();
+      int index = widget.music.id ?? 0;
+      index -= 1;
+      playListProvider.playSong(index);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final MusicModel currentMusic = widget.music;
+    final playListProvider = context.watch<PlaylistProvider>();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -29,7 +45,7 @@ class _MusicState extends State<Music> {
         ),
         backgroundColor: AppColors.primaryBackground,
         title: Text(
-          "${currentMusic.title} by ${currentMusic.singer}",
+          "${playListProvider.currentSong?.title} by ${playListProvider.currentSong?.singer}",
           style: TextStyle(color: AppColors.textPrimary, fontSize: 18),
         ),
         actions: [
@@ -43,14 +59,16 @@ class _MusicState extends State<Music> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Center(child: Image.asset("${currentMusic.coverImage}")),
+          Center(
+            child: Image.asset("${playListProvider.currentSong?.coverImage}"),
+          ),
           Text(
-            "Playing: ${currentMusic.title}",
+            "Playing: ${playListProvider.currentSong?.title}",
             style: TextStyle(color: AppColors.textPrimary),
           ),
           PlayerControls(
-            player: widget.player,
-            audioPath: "${widget.music.sourcePath}",
+            // player: ,
+            // audioPath: "${playListProvider.currentSong?.sourcePath}",
           ),
         ],
       ),

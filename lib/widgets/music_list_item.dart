@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/constants/app_colors.dart';
 import 'package:music_app/models/music.dart';
@@ -6,19 +5,18 @@ import 'package:music_app/pages/music.dart';
 
 class MusicListItem extends StatelessWidget {
   final MusicModel music;
-  final AudioPlayer player;
+  // final AudioPlayer player;
 
-  const MusicListItem({super.key, required this.music, required this.player});
+  const MusicListItem({super.key, required this.music});
+  // const MusicListItem({super.key});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => Music(music: music, player: player),
-          ),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => Music(music: music)));
       },
       child: Padding(
         padding: EdgeInsets.all(10),
