@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:music_app/constants/app_colors.dart';
 import 'package:music_app/models/music.dart';
 import 'package:music_app/modules/change_notifier.dart';
+import 'package:music_app/widgets/floating_music_widget.dart';
 import 'package:music_app/widgets/music_list_item.dart';
 import 'package:provider/provider.dart';
 
@@ -39,6 +40,9 @@ class _MusicListState extends State<MusicList> {
           });
         },
       ),
+      bottomNavigationBar: playListProvider.currentSong != null
+          ? FloatingMusicWidget()
+          : null,
     );
   }
 }

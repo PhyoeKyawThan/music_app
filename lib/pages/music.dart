@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class Music extends StatefulWidget {
   // final AudioPlayer player;
-  final MusicModel music;
+  final MusicModel? music;
 
   // const Music({super.key, required this.music, required this.player});
   const Music({super.key, required this.music});
@@ -23,7 +23,8 @@ class _MusicState extends State<Music> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final playListProvider = context.read<PlaylistProvider>();
-      int index = widget.music.id ?? 0;
+      int? music_id = widget.music?.id;
+      int index = music_id ?? 0;
       index -= 1;
       playListProvider.playSong(index);
     });
