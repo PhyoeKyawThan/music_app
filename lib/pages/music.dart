@@ -23,10 +23,7 @@ class _MusicState extends State<Music> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final playListProvider = context.read<PlaylistProvider>();
-      int? music_id = widget.music?.id;
-      int index = music_id ?? 0;
-      index -= 1;
-      playListProvider.playSong(index);
+      playListProvider.playSong(widget.music!.id!);
     });
   }
 
@@ -61,7 +58,22 @@ class _MusicState extends State<Music> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Center(
-            child: Image.asset("${playListProvider.currentSong?.coverImage}"),
+            child: playListProvider.currentSong?.coverImage == null
+                ? Container(
+                    width: 400,
+                    height: 500,
+                    color: Colors.grey[300],
+                    child: Icon(Icons.music_note),
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.memory(
+                      playListProvider.currentSong!.coverImage!,
+                      width: 300,
+                      height: 400,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
           ),
           Text(
             "Playing: ${playListProvider.currentSong?.title}",

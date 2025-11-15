@@ -33,16 +33,30 @@ class _FloatingMusicWidgetState extends State<FloatingMusicWidget> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  "${playListProvider.currentSong?.coverImage}",
-                  width: 70,
-                  height: 50,
-                ),
+                child: playListProvider.currentSong?.coverImage != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image.memory(
+                          playListProvider.currentSong!.coverImage!,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Container(
+                        width: 50,
+                        height: 50,
+                        color: Colors.grey[300],
+                        child: Icon(Icons.music_note),
+                      ),
               ),
+              SizedBox(width: 10),
               Expanded(
                 child: Text(
                   "${playListProvider.currentSong?.title}",
                   style: TextStyle(color: AppColors.textPrimary),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               IconButton(

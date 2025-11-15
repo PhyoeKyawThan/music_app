@@ -1,7 +1,9 @@
+import 'dart:typed_data';
+
 class MusicModel {
   int? id;
   String? title;
-  String? coverImage;
+  Uint8List? coverImage; // Change from String to Uint8List
   String? singer;
   String? duration;
   String? sourcePath;
@@ -19,7 +21,9 @@ class MusicModel {
     return MusicModel(
       id: data['id'],
       title: data['title'],
-      coverImage: data['coverImage'],
+      coverImage: data['coverImage'] is List
+          ? Uint8List.fromList(data['coverImage'])
+          : data['coverImage'],
       singer: data['singer'],
       duration: data['duration'],
       sourcePath: data['sourcePath'],

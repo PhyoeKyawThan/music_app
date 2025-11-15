@@ -23,18 +23,18 @@ class _HomeState extends State<Home> {
       child: Column(
         children: [
           const Text("Recently Played"),
-          SingleChildScrollView(
-            child: Row(
-              children: pp.playlist.map((music) {
-                return Row(
-                  children: [
-                    MusicCart(music: music),
-                    SizedBox(width: 10),
-                  ],
-                );
-              }).toList(),
-            ),
-          ),
+          // SingleChildScrollView(
+          //   child: Row(
+          //     children: pp.playlist.map((music) {
+          //       return Row(
+          //         children: [
+          //           MusicCart(music: music),
+          //           SizedBox(width: 10),
+          //         ],
+          //       );
+          //     }).toList(),
+          //   ),
+          // ),
         ],
       ),
     );
