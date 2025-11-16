@@ -20,7 +20,6 @@ class PlaylistProvider extends ChangeNotifier {
 
   PlaylistProvider() {
     _initializePlayer();
-    _loadDeviceSongs();
   }
 
   void _initializePlayer() {
@@ -47,11 +46,10 @@ class PlaylistProvider extends ChangeNotifier {
       final songs = await AudioService.getSongsSafe();
       if (songs.isNotEmpty) {
         _playlist = songs;
-        print("Loaded ${_playlist.length} songs from device");
+        // print("Loaded ${_playlist.length} songs from device");
       }
-      _playlist = [];
     } catch (e) {
-      print("Error loading songs: $e");
+      // print("Error loading songs: $e");
       _playlist = [];
     } finally {
       _isLoading = false;
@@ -60,27 +58,27 @@ class PlaylistProvider extends ChangeNotifier {
   }
 
   // Default fallback playlist
-  List<MusicModel> _getDefaultPlaylist() {
-    return [
-      MusicModel(
-        id: 1,
-        title: "Perfect",
-        singer: "Ed Shreen",
-        coverImage: null,
-        duration: "2:00",
-        sourcePath: "musics/Ed Sheeran - Perfect (Official Music Video).mp3",
-      ),
-      MusicModel(
-        id: 2,
-        title: "Shape Of you",
-        singer: "Ed Shreen",
-        coverImage: null,
-        duration: "2:01",
-        sourcePath:
-            "musics/Ed Sheeran - Shape of You (Official Music Video).mp3",
-      ),
-    ];
-  }
+  // List<MusicModel> _getDefaultPlaylist() {
+  //   return [
+  //     MusicModel(
+  //       id: 1,
+  //       title: "Perfect",
+  //       singer: "Ed Shreen",
+  //       coverImage: null,
+  //       duration: "2:00",
+  //       sourcePath: "musics/Ed Sheeran - Perfect (Official Music Video).mp3",
+  //     ),
+  //     MusicModel(
+  //       id: 2,
+  //       title: "Shape Of you",
+  //       singer: "Ed Shreen",
+  //       coverImage: null,
+  //       duration: "2:01",
+  //       sourcePath:
+  //           "musics/Ed Sheeran - Shape of You (Official Music Video).mp3",
+  //     ),
+  //   ];
+  // }
 
   // Refresh songs from device
   Future<void> refreshSongs() async {
@@ -101,22 +99,22 @@ class PlaylistProvider extends ChangeNotifier {
 
     _currentIndex = index;
     final song = _playlist[index];
-    print(song.id);
+    // print(song.id);
     try {
       // Use DeviceFileSource for actual device files
       await _player.play(DeviceFileSource(song.sourcePath!));
       _isPlaying = true;
-      print("Is device");
+      // print("Is device");
       notifyListeners();
     } catch (e) {
-      print("Error playing song: $e");
+      // print("Error playing song: $e");
       // Fallback to AssetSource if DeviceFileSource fails
       try {
         await _player.play(AssetSource(song.sourcePath!));
         _isPlaying = true;
         notifyListeners();
       } catch (e2) {
-        print("Error with asset source: $e2");
+        // print("Error with asset source: $e2");
       }
     }
   }

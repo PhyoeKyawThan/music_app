@@ -6,9 +6,7 @@ import 'package:music_app/widgets/music_cart.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
-  final AudioPlayer player;
-
-  const Home({super.key, required this.player});
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();

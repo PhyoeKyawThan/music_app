@@ -33,25 +33,11 @@ class _ViewState extends State<View> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    player = AudioPlayer();
-
-    player.setReleaseMode(ReleaseMode.stop);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await player.resume();
-    });
-  }
-
-  @override
   void dispose() {
-    player.dispose();
     super.dispose();
   }
 
-  List<Widget> get _pages => [Home(player: player), MusicList()];
+  List<Widget> get _pages => [Home(), MusicList()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

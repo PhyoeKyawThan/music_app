@@ -36,9 +36,8 @@ class _MusicListState extends State<MusicList> {
           },
         ),
         onRefresh: () async {
-          setState(() {
-            playList = playListProvider.playlist;
-          });
+          await playListProvider.refreshSongs();
+          print(playListProvider.playlist.length);
         },
       ),
       bottomNavigationBar: playListProvider.currentSong != null
