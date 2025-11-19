@@ -61,11 +61,8 @@ class _FloatingMusicWidgetState extends State<FloatingMusicWidget> {
               ),
               IconButton(
                 onPressed: () async {
-                  if (playListProvider.isPlaying) {
-                    await playListProvider.pause();
-                  } else {
-                    await playListProvider.resume();
-                  }
+                  // await playListProvider.resume();
+                  await playListProvider.togglePlayPause();
                 },
                 icon: Icon(
                   playListProvider.isPlaying ? Icons.pause : Icons.play_arrow,
@@ -77,6 +74,17 @@ class _FloatingMusicWidgetState extends State<FloatingMusicWidget> {
                   await playListProvider.playNext();
                 },
                 icon: Icon(Icons.skip_next, color: AppColors.favorite),
+              ),
+              IconButton(
+                onPressed: () async {
+                  await playListProvider.setFav();
+                },
+                icon: Icon(
+                  Icons.favorite,
+                  color: playListProvider.currentSong!.isFav == true
+                      ? AppColors.favorite
+                      : AppColors.textPrimary,
+                ),
               ),
             ],
           ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/constants/app_colors.dart';
 import 'package:music_app/models/music.dart';
-import 'package:music_app/modules/audio_from_storage_handler.dart';
 import 'package:music_app/modules/change_notifier.dart';
 import 'package:music_app/widgets/floating_music_widget.dart';
 import 'package:music_app/widgets/music_list_item.dart';
@@ -15,6 +14,14 @@ class MusicList extends StatefulWidget {
 }
 
 class _MusicListState extends State<MusicList> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<PlaylistProvider>(context, listen: false).refreshSongs();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final playListProvider = context.watch<PlaylistProvider>();
@@ -36,8 +43,10 @@ class _MusicListState extends State<MusicList> {
           },
         ),
         onRefresh: () async {
-          await playListProvider.refreshSongs();
-          print(playListProvider.playlist.length);
+          Provider.of<PlaylistProvider>(
+            context,
+            listen: false,
+          ).refreshSongs(reWrite: false);
         },
       ),
       bottomNavigationBar: playListProvider.currentSong != null

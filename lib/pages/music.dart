@@ -24,6 +24,8 @@ class _MusicState extends State<Music> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final playListProvider = context.read<PlaylistProvider>();
       playListProvider.playSong(widget.music!.id!);
+      playListProvider.setCurrentSong(widget.music!);
+      playListProvider.setRecentlyPlayed(widget.music!);
     });
   }
 
@@ -48,8 +50,15 @@ class _MusicState extends State<Music> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.favorite, color: Colors.red),
+            onPressed: () async {
+              await playListProvider.setFav();
+            },
+            icon: Icon(
+              Icons.favorite,
+              color: playListProvider.currentSong?.isFav == true
+                  ? AppColors.favorite
+                  : AppColors.textPrimary,
+            ),
           ),
         ],
       ),

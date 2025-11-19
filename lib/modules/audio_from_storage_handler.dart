@@ -34,11 +34,11 @@ class AudioService {
       // Convert List<SongModel> to List<MusicModel>
       int index = 0;
       List<MusicModel> musicList = await Future.wait(
-        songs.map((song) {
-          Future<MusicModel> music = _convertToMusicModel(song, index);
-          index += 1;
-          return music;
-        }),
+        songs
+            .where(
+              (song) => song.duration! > 150000,
+            ) // filter songs longer than 2:30
+            .map((song) => _convertToMusicModel(song, index++)),
       );
 
       return musicList;
@@ -67,6 +67,7 @@ class AudioService {
       singer: song.artist ?? "Unknown Artist",
       duration: _formatDuration(song.duration ?? 0),
       sourcePath: song.data,
+      isFav: false,
     );
   }
 

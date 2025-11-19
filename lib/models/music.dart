@@ -7,6 +7,7 @@ class MusicModel {
   String? singer;
   String? duration;
   String? sourcePath;
+  bool? isFav;
 
   MusicModel({
     this.id,
@@ -15,6 +16,7 @@ class MusicModel {
     this.singer,
     this.duration,
     this.sourcePath,
+    this.isFav,
   });
 
   static MusicModel toObject(Map<String, dynamic> data) {
@@ -27,6 +29,7 @@ class MusicModel {
       singer: data['singer'],
       duration: data['duration'],
       sourcePath: data['sourcePath'],
+      isFav: data['isFav'],
     );
   }
 
@@ -38,6 +41,7 @@ class MusicModel {
       'singer': singer,
       'duration': duration,
       'sourcePath': sourcePath,
+      'isFav': isFav,
     };
   }
 }

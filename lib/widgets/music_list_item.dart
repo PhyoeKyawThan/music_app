@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/constants/app_colors.dart';
-import 'package:music_app/helpers/helpers.dart';
 import 'package:music_app/models/music.dart';
 import 'package:music_app/pages/music.dart';
 
@@ -27,12 +26,7 @@ class MusicListItem extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(50),
               child: music.coverImage != null
-                  ? Image.memory(
-                      music.coverImage!,
-                      width: 70,
-                      height: 70,
-                      fit: BoxFit.cover,
-                    )
+                  ? Image(image: MemoryImage(music.coverImage!))
                   : Container(
                       width: 70,
                       height: 70,
@@ -68,6 +62,15 @@ class MusicListItem extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            IconButton(
+              onPressed: () {
+                print(music.isFav);
+              },
+              icon: Icon(Icons.favorite),
+              color: music.isFav == true
+                  ? AppColors.favorite
+                  : AppColors.textPrimary,
             ),
           ],
         ),
