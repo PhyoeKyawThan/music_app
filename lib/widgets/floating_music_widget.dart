@@ -12,9 +12,27 @@ class FloatingMusicWidget extends StatefulWidget {
 }
 
 class _FloatingMusicWidgetState extends State<FloatingMusicWidget> {
+  late final MemoryImage memoryImage;
+  @override
+  void initState() {
+    super.initState();
+    final playListProvider = context.read<PlaylistProvider>();
+    if (playListProvider.currentSong?.coverImage != null) {
+      memoryImage = MemoryImage(playListProvider.currentSong!.coverImage!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool _isFav = false;
     final playListProvider = context.watch<PlaylistProvider>();
+    _isFav = playListProvider.currentSong?.isFav ?? false;
+    void _toggleFavorite() {
+      setState(() {
+        _isFav = !_isFav;
+      });
+    }
+
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
@@ -36,8 +54,8 @@ class _FloatingMusicWidgetState extends State<FloatingMusicWidget> {
                 child: playListProvider.currentSong?.coverImage != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(50),
-                        child: Image.memory(
-                          playListProvider.currentSong!.coverImage!,
+                        child: Image(
+                          image: memoryImage,
                           width: 50,
                           height: 50,
                           fit: BoxFit.cover,
@@ -76,12 +94,13 @@ class _FloatingMusicWidgetState extends State<FloatingMusicWidget> {
                 icon: Icon(Icons.skip_next, color: AppColors.favorite),
               ),
               IconButton(
-                onPressed: () async {
-                  await playListProvider.setFav();
+                onPressed: () {
+                  _toggleFavorite();
+                  playListProvider.setFav(music: playListProvider.currentSong!);
                 },
                 icon: Icon(
                   Icons.favorite,
-                  color: playListProvider.currentSong!.isFav == true
+                  color: _isFav == true
                       ? AppColors.favorite
                       : AppColors.textPrimary,
                 ),

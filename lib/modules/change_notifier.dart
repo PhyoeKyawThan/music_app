@@ -123,13 +123,14 @@ class PlaylistProvider extends ChangeNotifier {
   }
 
   Future<void> setFav({music}) async {
-    bool fav =
-        currentSong == null ||
-            currentSong!.isFav == null ||
-            currentSong!.isFav == true
-        ? false
-        : true;
-    _playlist[currentSong!.id!].isFav = fav;
+    if (currentSong == null || currentSong!.id == null) {
+      return;
+    }
+
+    bool fav = !(currentSong!.isFav ?? false);
+
+    currentSong!.isFav = fav;
+
     await _dbHelper.setFav(id: currentSong!.id, isFav: fav);
     notifyListeners();
   }

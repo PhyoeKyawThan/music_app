@@ -46,7 +46,7 @@ class _MusicListState extends State<MusicList> {
           Provider.of<PlaylistProvider>(
             context,
             listen: false,
-          ).refreshSongs(reWrite: false);
+          ).refreshSongs(reWrite: true);
         },
       ),
       bottomNavigationBar: playListProvider.currentSong != null

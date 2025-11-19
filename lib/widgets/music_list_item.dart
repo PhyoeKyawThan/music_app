@@ -3,15 +3,29 @@ import 'package:music_app/constants/app_colors.dart';
 import 'package:music_app/models/music.dart';
 import 'package:music_app/pages/music.dart';
 
-class MusicListItem extends StatelessWidget {
+class MusicListItem extends StatefulWidget {
   final MusicModel music;
-  // final AudioPlayer player;
 
   const MusicListItem({super.key, required this.music});
-  // const MusicListItem({super.key});
+
+  @override
+  State<MusicListItem> createState() => _MusicListItemState();
+}
+
+class _MusicListItemState extends State<MusicListItem> {
+  late final MemoryImage? memoryImage;
+
+  @override
+  void initState() {
+    super.initState();
+    memoryImage = widget.music.coverImage != null
+        ? MemoryImage(widget.music.coverImage!)
+        : null;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final MusicModel music = widget.music;
     return InkWell(
       onTap: () {
         Navigator.of(
@@ -26,7 +40,12 @@ class MusicListItem extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(50),
               child: music.coverImage != null
-                  ? Image(image: MemoryImage(music.coverImage!))
+                  ? Image(
+                      image: memoryImage!,
+                      width: 70,
+                      height: 70,
+                      fit: BoxFit.cover,
+                    )
                   : Container(
                       width: 70,
                       height: 70,

@@ -80,6 +80,7 @@ class DatabaseHelper {
         duration: maps[i]['duration'],
         sourcePath: maps[i]['sourcePath'],
         coverImage: maps[i]['coverImage'],
+        isFav: maps[i]['isFav'] == 1 ? true : false,
       );
     });
   }
