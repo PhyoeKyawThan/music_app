@@ -34,10 +34,11 @@ class _MusicListState extends State<MusicList> {
   Widget build(BuildContext context) {
     final playListProvider = context.watch<PlaylistProvider>();
     List<MusicModel> playList = playListProvider.playlist;
+    int totalSong = playList.length;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Your favoirate musics",
+          "Your favorite musics ($totalSong)",
           style: TextStyle(color: AppColors.textPrimary),
         ),
         backgroundColor: AppColors.primaryBackground,

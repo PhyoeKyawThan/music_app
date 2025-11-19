@@ -14,7 +14,7 @@ class PlaylistProvider extends ChangeNotifier {
   List<MusicModel> _playlist = [];
   List<MusicModel> _recentlyPlayed = [];
   List<MusicModel> _favSongs = [];
-  int _currentIndex = 1;
+  int _currentIndex = 0;
   bool _isPlaying = false;
   bool _isLoading = false;
 
@@ -263,6 +263,7 @@ class PlaylistProvider extends ChangeNotifier {
     if (_playlist.isEmpty) return;
     _currentIndex = (_currentIndex + 1) % _playlist.length;
     await playSong(_currentIndex);
+    showSongNotification(currentSong!);
   }
 
   // Play previous song
@@ -270,6 +271,7 @@ class PlaylistProvider extends ChangeNotifier {
     if (_playlist.isEmpty) return;
     _currentIndex = (_currentIndex - 1 + _playlist.length) % _playlist.length;
     await playSong(_currentIndex);
+    showSongNotification(currentSong!);
   }
 
   // Seek to position

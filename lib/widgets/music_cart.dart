@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:music_app/constants/app_colors.dart';
 import 'package:music_app/models/music.dart';
@@ -13,11 +15,24 @@ class MusicCart extends StatefulWidget {
 }
 
 class _MusicCartState extends State<MusicCart> {
-  late final MemoryImage memoryImage;
+  MemoryImage? memoryImage;
   @override
   void initState() {
     super.initState();
-    memoryImage = MemoryImage(widget.music.coverImage!);
+    _updateImage(widget.music.coverImage);
+  }
+
+  @override
+  void didUpdateWidget(covariant MusicCart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.music.coverImage != oldWidget.music.coverImage) {
+      _updateImage(widget.music.coverImage);
+    }
+  }
+
+  void _updateImage(Uint8List? coverImage) {
+    memoryImage = coverImage != null ? MemoryImage(coverImage) : null;
   }
 
   @override
@@ -33,7 +48,7 @@ class _MusicCartState extends State<MusicCart> {
         borderRadius: BorderRadiusGeometry.circular(10),
         child: Container(
           color: const Color.fromARGB(255, 10, 13, 65),
-          width: 100,
+          width: 120,
           height: 160,
           child: Padding(
             padding: EdgeInsets.all(5),
@@ -44,7 +59,7 @@ class _MusicCartState extends State<MusicCart> {
                   borderRadius: BorderRadiusGeometry.circular(10),
                   child: music.coverImage != null
                       ? Image(
-                          image: memoryImage,
+                          image: memoryImage!,
                           width: 100,
                           height: 120,
                           fit: BoxFit.cover,

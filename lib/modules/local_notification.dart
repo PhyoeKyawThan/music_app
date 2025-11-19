@@ -22,7 +22,7 @@ Future<void> showSongNotification(MusicModel song) async {
     channelDescription: 'Shows current playing song',
     importance: Importance.max,
     priority: Priority.high,
-    ongoing: true, // keeps notification persistent
+    ongoing: true,
     icon: '@mipmap/ic_launcher',
     styleInformation: MediaStyleInformation(),
   );
