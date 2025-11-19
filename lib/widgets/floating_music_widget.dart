@@ -96,7 +96,10 @@ class _FloatingMusicWidgetState extends State<FloatingMusicWidget> {
               IconButton(
                 onPressed: () {
                   _toggleFavorite();
-                  playListProvider.setFav(music: playListProvider.currentSong!);
+                  playListProvider.setFav(
+                    context,
+                    music: playListProvider.currentSong!,
+                  );
                 },
                 icon: Icon(
                   Icons.favorite,

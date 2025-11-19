@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/constants/app_colors.dart';
 import 'package:music_app/models/music.dart';
+import 'package:music_app/modules/change_notifier.dart';
 import 'package:music_app/pages/music.dart';
+import 'package:provider/provider.dart';
 
 class MusicListItem extends StatefulWidget {
   final MusicModel music;
@@ -26,6 +28,13 @@ class _MusicListItemState extends State<MusicListItem> {
   @override
   Widget build(BuildContext context) {
     final MusicModel music = widget.music;
+    bool isFav = music.isFav ?? false;
+    void _toggleFavorite() {
+      setState(() {
+        isFav = !isFav;
+      });
+    }
+
     return InkWell(
       onTap: () {
         Navigator.of(
@@ -84,7 +93,11 @@ class _MusicListItemState extends State<MusicListItem> {
             ),
             IconButton(
               onPressed: () {
-                print(music.isFav);
+                _toggleFavorite();
+                Provider.of<PlaylistProvider>(
+                  context,
+                  listen: false,
+                ).setFav(context, music: music);
               },
               icon: Icon(Icons.favorite),
               color: music.isFav == true

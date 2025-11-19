@@ -17,9 +17,17 @@ class _MusicListState extends State<MusicList> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<PlaylistProvider>(context, listen: false).refreshSongs();
-    });
+    if (Provider.of<PlaylistProvider>(
+      context,
+      listen: false,
+    ).playlist.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Provider.of<PlaylistProvider>(
+          context,
+          listen: false,
+        ).refreshSongs(reWrite: false);
+      });
+    }
   }
 
   @override
@@ -46,7 +54,7 @@ class _MusicListState extends State<MusicList> {
           Provider.of<PlaylistProvider>(
             context,
             listen: false,
-          ).refreshSongs(reWrite: true);
+          ).refreshSongs(reWrite: false);
         },
       ),
       bottomNavigationBar: playListProvider.currentSong != null

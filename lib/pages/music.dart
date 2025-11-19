@@ -53,7 +53,10 @@ class _MusicState extends State<Music> {
         actions: [
           IconButton(
             onPressed: () async {
-              await playListProvider.setFav();
+              await playListProvider.setFav(
+                context,
+                music: playListProvider.currentSong!,
+              );
             },
             icon: Icon(
               Icons.favorite,

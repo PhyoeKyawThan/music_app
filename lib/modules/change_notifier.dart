@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
 import 'package:music_app/models/music.dart';
 import 'package:music_app/modules/audio_from_storage_handler.dart';
 import 'package:music_app/helpers/database_helper.dart';
 import 'dart:async';
+
+import 'package:music_app/modules/local_notification.dart';
 
 class PlaylistProvider extends ChangeNotifier {
   final AudioPlayer _player = AudioPlayer();
@@ -36,8 +39,10 @@ class PlaylistProvider extends ChangeNotifier {
     _player.onPlayerStateChanged.listen((state) {
       if (state == PlayerState.playing) {
         _isPlaying = true;
+        showSongNotification(currentSong!);
       } else if (state == PlayerState.paused) {
         _isPlaying = false;
+        notificationsPlugin.cancel(0);
       }
       notifyListeners();
     });
@@ -122,16 +127,25 @@ class PlaylistProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> setFav({music}) async {
-    if (currentSong == null || currentSong!.id == null) {
+  Future<void> setFav(BuildContext context, {music}) async {
+    if (music == null || music.id == null) {
       return;
     }
 
-    bool fav = !(currentSong!.isFav ?? false);
+    bool fav = music.isFav ? false : true;
 
-    currentSong!.isFav = fav;
+    music.isFav = fav;
 
-    await _dbHelper.setFav(id: currentSong!.id, isFav: fav);
+    await _dbHelper.setFav(id: music.id, isFav: fav);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          music.isFav == true ? "Added to favorites" : "Removed from favorites",
+          style: TextStyle(color: fav ? Colors.yellow : Colors.white),
+        ),
+        duration: Duration(seconds: 1),
+      ),
+    );
     notifyListeners();
   }
 

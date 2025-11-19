@@ -13,13 +13,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     Provider.of<PlaylistProvider>(context, listen: false).refreshSongs();
-  //   });
-  // }
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<PlaylistProvider>(
+        context,
+        listen: false,
+      ).refreshSongs(reWrite: false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
