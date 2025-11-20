@@ -18,7 +18,6 @@ class Music extends StatefulWidget {
 }
 
 class _MusicState extends State<Music> {
-  late final MemoryImage memoryImage;
   @override
   void initState() {
     super.initState();
@@ -28,13 +27,12 @@ class _MusicState extends State<Music> {
       playListProvider.setCurrentSong(widget.music!);
       playListProvider.setRecentlyPlayed(widget.music!);
     });
-    memoryImage = MemoryImage(widget.music!.coverImage!);
   }
 
   @override
   Widget build(BuildContext context) {
     final playListProvider = context.watch<PlaylistProvider>();
-
+    final memoryImage = MemoryImage(widget.music!.coverImage!);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -81,12 +79,14 @@ class _MusicState extends State<Music> {
                   )
                 : ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image(image: memoryImage, width: 300, height: 400),
-                    // Image.memory(
-                    //   playListProvider.currentSong!.coverImage!,
-                    //   width: 300,
-                    //   height: 400,
-                    //   fit: BoxFit.cover,
+                    child:
+                        // Image(image: memoryImage, width: 300, height: 400),
+                        Image.memory(
+                          playListProvider.currentSong!.coverImage!,
+                          width: 300,
+                          height: 400,
+                          fit: BoxFit.cover,
+                        ),
                   ),
           ),
           Text(

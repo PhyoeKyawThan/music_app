@@ -12,24 +12,20 @@ class FloatingMusicWidget extends StatefulWidget {
 }
 
 class _FloatingMusicWidgetState extends State<FloatingMusicWidget> {
-  late final MemoryImage memoryImage;
   @override
   void initState() {
     super.initState();
-    final playListProvider = context.read<PlaylistProvider>();
-    if (playListProvider.currentSong?.coverImage != null) {
-      memoryImage = MemoryImage(playListProvider.currentSong!.coverImage!);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    bool _isFav = false;
+    bool isFav = false;
     final playListProvider = context.watch<PlaylistProvider>();
-    _isFav = playListProvider.currentSong?.isFav ?? false;
-    void _toggleFavorite() {
+    final memoryImage = MemoryImage(playListProvider.currentSong!.coverImage!);
+    isFav = playListProvider.currentSong?.isFav ?? false;
+    void toggleFavorite() {
       setState(() {
-        _isFav = !_isFav;
+        isFav = !isFav;
       });
     }
 
@@ -95,7 +91,7 @@ class _FloatingMusicWidgetState extends State<FloatingMusicWidget> {
               ),
               IconButton(
                 onPressed: () {
-                  _toggleFavorite();
+                  toggleFavorite();
                   playListProvider.setFav(
                     context,
                     music: playListProvider.currentSong!,
@@ -103,7 +99,7 @@ class _FloatingMusicWidgetState extends State<FloatingMusicWidget> {
                 },
                 icon: Icon(
                   Icons.favorite,
-                  color: _isFav == true
+                  color: isFav == true
                       ? AppColors.favorite
                       : AppColors.textPrimary,
                 ),

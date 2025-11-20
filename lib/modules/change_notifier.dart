@@ -114,6 +114,11 @@ class PlaylistProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> refreshHome() async {
+    _recentlyPlayed = await _dbHelper.getRecentlyPlayedSongs();
+    _favSongs = await _dbHelper.getFavSongs();
+  }
+
   // Add individual song to playlist and cache it
   Future<void> addSongToPlaylist(MusicModel song) async {
     // Check if song already exists in playlist
@@ -146,6 +151,11 @@ class PlaylistProvider extends ChangeNotifier {
         duration: Duration(seconds: 1),
       ),
     );
+    if (!fav) {
+      _favSongs.removeWhere((item) => item.id == music.id);
+    } else {
+      _favSongs.insert(0, music);
+    }
     notifyListeners();
   }
 
@@ -264,6 +274,7 @@ class PlaylistProvider extends ChangeNotifier {
     _currentIndex = (_currentIndex + 1) % _playlist.length;
     await playSong(_currentIndex);
     showSongNotification(currentSong!);
+    notifyListeners();
   }
 
   // Play previous song

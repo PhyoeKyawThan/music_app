@@ -16,17 +16,17 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    // if (Provider.of<PlaylistProvider>(
-    //   context,
-    //   listen: false,
-    // ).playlist.isEmpty) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<PlaylistProvider>(
-        context,
-        listen: false,
-      ).refreshSongs(reWrite: false);
-    });
-    // }
+    if (Provider.of<PlaylistProvider>(
+      context,
+      listen: false,
+    ).playlist.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Provider.of<PlaylistProvider>(
+          context,
+          listen: false,
+        ).refreshSongs(reWrite: false);
+      });
+    }
   }
 
   @override
@@ -71,7 +71,7 @@ class _HomeState extends State<Home> {
             ),
             SizedBox(height: 10),
             pp.recentlyPlayed.isEmpty
-                ? Container(
+                ? SizedBox(
                     height: 100,
                     child: Center(
                       child: Text(
@@ -127,10 +127,7 @@ class _HomeState extends State<Home> {
           ],
         ),
         onRefresh: () async {
-          Provider.of<PlaylistProvider>(
-            context,
-            listen: false,
-          ).refreshSongs(reWrite: false);
+          Provider.of<PlaylistProvider>(context, listen: false).refreshHome();
         },
       ),
       bottomNavigationBar: pp.currentSong != null

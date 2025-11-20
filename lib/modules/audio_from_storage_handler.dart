@@ -1,25 +1,38 @@
 import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:music_app/models/music.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class AudioService {
   static final OnAudioQuery _audioQuery = OnAudioQuery();
   static bool _isQuerying = false;
 
+  static Completer<void>? _queryCompleter;
+
   static Future<List<MusicModel>> getSongsSafe() async {
-    // Prevent multiple simultaneous queries
-    if (_isQuerying) {
-      return [];
+    // Prevent multiple simultaneous queries with completer pattern
+    if (_isQuerying && _queryCompleter != null) {
+      // Wait for the ongoing query to complete and return its result
+      await _queryCompleter!.future;
+      return []; // Or you could cache and return the previous result
     }
 
     _isQuerying = true;
+    _queryCompleter = Completer<void>();
+
     try {
-      if (!await _checkAndRequestPermissions()) {
+      // Add a small delay to prevent race conditions
+      await Future.delayed(Duration(milliseconds: 100));
+
+      // Check permissions with retry logic
+      final hasPermission = await _checkAndRequestPermissionsWithRetry();
+      if (!hasPermission) {
+        // print('Permission denied for audio query');
         return [];
       }
+
+      // Add another small delay after permission grant
+      await Future.delayed(Duration(milliseconds: 200));
 
       // Use a timeout to prevent hanging
       final songs = await _audioQuery
@@ -29,25 +42,51 @@ class AudioService {
             uriType: UriType.EXTERNAL,
             ignoreCase: true,
           )
-          .timeout(Duration(seconds: 20));
+          .timeout(
+            Duration(seconds: 30),
+            onTimeout: () {
+              // print('Query timeout occurred');
+              return <SongModel>[];
+            },
+          );
 
-      // Convert List<SongModel> to List<MusicModel>
-      int index = 0;
-      List<MusicModel> musicList = await Future.wait(
-        songs
-            .where(
-              (song) => song.duration! > 150000,
-            ) // filter songs longer than 2:30
-            .map((song) => _convertToMusicModel(song, index++)),
-      );
+      if (songs.isEmpty) {
+        // print('No songs found or query returned empty');
+        return [];
+      }
 
+      // Filter and convert songs with error handling for each conversion
+      final filteredSongs = songs
+          .where((song) => song.duration != null && song.duration! > 150000)
+          .toList();
+
+      // print('Found ${filteredSongs.length} songs after filtering');
+
+      // Convert List<SongModel> to List<MusicModel> with individual error handling
+      List<MusicModel> musicList = [];
+      for (int i = 0; i < filteredSongs.length; i++) {
+        try {
+          final musicModel = await _convertToMusicModel(filteredSongs[i], i);
+          musicList.add(musicModel);
+        } catch (e) {
+          // print('Error converting song at index $i: $e');
+          // Continue with other songs instead of failing entirely
+        }
+      }
+
+      // print('Successfully converted ${musicList.length} songs');
       return musicList;
-    } on TimeoutException {
+    } on TimeoutException catch (e) {
+      // print('Timeout exception in getSongsSafe: $e');
       return [];
-    } catch (e) {
+    } catch (e, stackTrace) {
+      // print('Error in getSongsSafe: $e');
+      print('Stack trace: $stackTrace');
       return [];
     } finally {
       _isQuerying = false;
+      _queryCompleter?.complete();
+      _queryCompleter = null;
     }
   }
 
@@ -95,7 +134,7 @@ class AudioService {
     // Check if data is not empty and has reasonable size
     if (data.isEmpty || data.lengthInBytes > 500000) {
       // Max 500KB
-      print("Invalid image: empty or too large");
+      // print("Invalid image: empty or too large");
       return false;
     }
 
@@ -114,7 +153,7 @@ class AudioService {
       }
     }
 
-    print("Invalid image: unrecognized format");
+    // print("Invalid image: unrecognized format");
     return false;
   }
 
@@ -138,27 +177,44 @@ class AudioService {
     }
   }
 
-  static Future<bool> _checkAndRequestPermissions() async {
-    try {
-      // Check if we already have permissions
-      if (await Permission.audio.isGranted ||
-          await Permission.storage.isGranted ||
-          await Permission.manageExternalStorage.isGranted) {
-        return true;
-      }
+  static Future<bool> _checkAndRequestPermissionsWithRetry({
+    int maxRetries = 3,
+  }) async {
+    for (int attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        // print('Permission check attempt $attempt');
 
-      // Request permissions
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
-        await Permission.audio.request();
-      }
+        // Use the package's built-in permission check
+        bool hasPermission = await _audioQuery.checkAndRequest(
+          retryRequest: attempt < maxRetries, // Only retry if not last attempt
+        );
 
-      return await Permission.audio.isGranted ||
-          await Permission.storage.isGranted;
-    } catch (e) {
-      print("Permission check error: $e");
-      return false;
+        if (hasPermission) {
+          // print('Permission granted on attempt $attempt');
+          return true;
+        }
+
+        // If we're on the last attempt and still no permission, return false
+        if (attempt == maxRetries) {
+          // print('Permission denied after $maxRetries attempts');
+          return false;
+        }
+
+        // Wait before retrying
+        // print('Waiting before permission retry...');
+        await Future.delayed(Duration(milliseconds: 500 * attempt));
+      } catch (e) {
+        // print('Permission check error on attempt $attempt: $e');
+
+        if (attempt == maxRetries) {
+          return false;
+        }
+
+        await Future.delayed(Duration(milliseconds: 500 * attempt));
+      }
     }
+
+    return false;
   }
 
   // Optional: Method to get artwork as Uint8List for immediate use
@@ -171,7 +227,7 @@ class AudioService {
         size: 300,
       );
     } catch (e) {
-      print("Error getting artwork bytes for song $songId: $e");
+      // print("Error getting artwork bytes for song $songId: $e");
       return null;
     }
   }
