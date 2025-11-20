@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:music_app/modules/change_notifier.dart';
 import 'package:music_app/pages/home.dart';
 import 'package:music_app/pages/music_lists.dart';
+import 'package:music_app/pages/settings.dart';
 import 'package:music_app/widgets/bottom_navigation.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,7 @@ class View extends StatefulWidget {
 
 class _ViewState extends State<View> {
   late AudioPlayer player = AudioPlayer();
-  int _currentIndex = 0;
+  int _currentIndex = 1;
 
   void _handleView(index) {
     setState(() {
@@ -37,7 +38,7 @@ class _ViewState extends State<View> {
     super.dispose();
   }
 
-  List<Widget> get _pages => [Home(), MusicList()];
+  List<Widget> get _pages => [MusicList(), Home(), Settings()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

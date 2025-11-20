@@ -24,8 +24,9 @@ class CustomNagivationBar extends StatelessWidget {
       currentIndex: currentIndex,
       onTap: onTap,
       items: [
-        _builtItem(Icon(Icons.home), ""),
         _builtItem(Icon(Icons.music_note), ""),
+        _builtItem(Icon(Icons.home), ""),
+        _builtItem(Icon(Icons.settings), ""),
       ],
     );
   }
