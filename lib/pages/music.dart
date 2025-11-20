@@ -32,7 +32,6 @@ class _MusicState extends State<Music> {
   @override
   Widget build(BuildContext context) {
     final playListProvider = context.watch<PlaylistProvider>();
-    final memoryImage = MemoryImage(widget.music!.coverImage!);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
